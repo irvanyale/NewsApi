@@ -1,6 +1,7 @@
 package com.irvanyale.app.newsapi.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.irvanyale.app.newsapi.ArticlesActivity;
 import com.irvanyale.app.newsapi.R;
 import com.irvanyale.app.newsapi.model.Source;
 import com.squareup.picasso.Picasso;
@@ -56,9 +58,17 @@ public class ListSourcesAdapter extends RecyclerView.Adapter<ListSourcesAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Source.ListSource listSource = listSources.get(position);
+        final Source.ListSource listSource = listSources.get(position);
         holder.txtv_name.setText(listSource.getName());
         holder.txtv_id.setText(listSource.getId());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContext().startActivity(new Intent(getContext(), ArticlesActivity.class)
+                .putExtra("source", listSource.getId()));
+            }
+        });
     }
 
     @Override

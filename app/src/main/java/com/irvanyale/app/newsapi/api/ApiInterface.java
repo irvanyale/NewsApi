@@ -1,5 +1,6 @@
 package com.irvanyale.app.newsapi.api;
 
+import com.irvanyale.app.newsapi.model.Article;
 import com.irvanyale.app.newsapi.model.Source;
 
 import retrofit2.Call;
@@ -14,4 +15,7 @@ public interface ApiInterface {
 
     @GET("sources")
     Call<Source> getListSource(@Query("language") String languange);
+
+    @GET("articles")
+    Call<Article> getListArticle(@Query("source") String source, @Query("apiKey") String apiKey);
 }
