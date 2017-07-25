@@ -1,6 +1,7 @@
 package com.irvanyale.app.newsapi.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.irvanyale.app.newsapi.ArticlesActivity;
 import com.irvanyale.app.newsapi.R;
+import com.irvanyale.app.newsapi.WebViewActivity;
 import com.irvanyale.app.newsapi.model.Article;
 import com.irvanyale.app.newsapi.model.Source;
 import com.squareup.picasso.Picasso;
@@ -58,7 +61,7 @@ public class ListArticlesAdapter extends RecyclerView.Adapter<ListArticlesAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Article.ListArticle listArticle = listArticles.get(position);
+        final Article.ListArticle listArticle = listArticles.get(position);
 
         holder.txtv_title.setText(listArticle.getTitle());
         holder.txtv_desc.setText(listArticle.getDescription());
@@ -70,6 +73,14 @@ public class ListArticlesAdapter extends RecyclerView.Adapter<ListArticlesAdapte
                 .placeholder(R.drawable.ic_image)
                 .error(R.drawable.ic_image)
                 .into(holder.image);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getContext().startActivity(new Intent(getContext(), WebViewActivity.class)
+                        .putExtra("url", listArticle.getUrl()));
+            }
+        });
     }
 
     @Override
