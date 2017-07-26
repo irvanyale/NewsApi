@@ -1,15 +1,21 @@
 package com.irvanyale.app.newsapi;
 
 import android.app.ProgressDialog;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.irvanyale.app.newsapi.adapter.ListArticlesAdapter;
 import com.irvanyale.app.newsapi.api.ApiClient;
 import com.irvanyale.app.newsapi.api.ApiInterface;
+import com.irvanyale.app.newsapi.helper.ArticleHelper;
 import com.irvanyale.app.newsapi.model.Article;
 
 import java.util.ArrayList;
@@ -26,6 +32,7 @@ public class ArticlesActivity extends AppCompatActivity {
     private ApiInterface client;
     private Article article = new Article();
     private List<Article.ListArticle> listArticles = new ArrayList<>();
+    private List<Article.ListArticle> listArticleHelper = new ArrayList<>();
     private String source = "";
 
     @Override
@@ -42,6 +49,9 @@ public class ArticlesActivity extends AppCompatActivity {
         rvly_list_articles.setAdapter(listArticlesAdapter);
 
         source = getIntent().getStringExtra("source");
+
+        listArticleHelper = ArticleHelper.getArticle();
+        listArticleHelper.clear();
 
         loadDataArticles(source);
     }
@@ -64,6 +74,9 @@ public class ArticlesActivity extends AppCompatActivity {
                     if (article.getStatus().equals("ok")){
                         listArticles = article.getArticles();
 
+                        for (Article.ListArticle data : listArticles){
+                            listArticleHelper.add(data);
+                        }
                         listArticlesAdapter.setListArticles(listArticles);
                     }
 
@@ -79,5 +92,44 @@ public class ArticlesActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    private void loadDataSearchArticle(String query){
+
+        listArticles.clear();
+
+        CharSequence queryc = query;
+
+        for (Article.ListArticle data : listArticleHelper){
+            if (data.getTitle().trim().toLowerCase().contains(queryc)){
+                Log.d("TAG", "loadDataSearchArticle: "+data.getTitle());
+                listArticles.add(data);
+            }
+        }
+
+        listArticlesAdapter.setListArticles(listArticles);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                loadDataSearchArticle(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+
     }
 }
