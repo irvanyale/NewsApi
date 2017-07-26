@@ -125,6 +125,17 @@ public class ArticlesActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (newText.equals("")){
+                    loadDataArticles(source);
+                }
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                loadDataArticles(source);
                 return false;
             }
         });
